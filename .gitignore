@@ -38,3 +38,5 @@ config.yaml
 # Build artifacts
 dist/
 bin/
+
+.serena/
