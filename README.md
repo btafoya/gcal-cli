@@ -4,7 +4,7 @@
 
 **A powerful Google Calendar command-line tool with natural language support**
 
-[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://go.dev/)
+[![Go Version](https://img.shields.io/badge/Go-1.24+-00ADD8?style=flat&logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -62,7 +62,7 @@ go build -o gcal-cli ./cmd/gcal-cli
 ```
 
 ### Requirements
-- Go 1.21 or later
+- Go 1.24 or later
 - Google Cloud Platform account
 - Google Calendar API enabled
 - OAuth2 credentials ([setup guide](./USER-INSTRUCTIONS.md#authentication))
