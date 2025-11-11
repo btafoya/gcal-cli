@@ -256,10 +256,34 @@ Example error response:
 # Development build
 go build -o gcal-cli ./cmd/gcal-cli
 
-# Production build with version info
-go build -ldflags "-X github.com/btafoya/gcal-cli/internal/commands.Version=1.0.0" \
+# Build with automatic version info
+VERSION=$(./scripts/version.sh)
+go build -ldflags "-X github.com/btafoya/gcal-cli/internal/commands.Version=$VERSION" \
          -o gcal-cli ./cmd/gcal-cli
+
+# Build release binaries for all platforms
+./scripts/build-release.sh
 ```
+
+### Versioning
+
+```bash
+# Show current version
+./scripts/version.sh current
+
+# Show next version
+./scripts/version.sh next
+
+# Create a new release tag
+./scripts/version.sh tag 1.0.0
+
+# Push tag to trigger GitHub release
+git push origin v1.0.0
+```
+
+Version format: `MAJOR.MINOR.PATCH[-dev.N+HASH]`
+- Released: `1.0.0`
+- Development: `1.0.0-dev.5+a1b2c3d`
 
 ### Testing
 
