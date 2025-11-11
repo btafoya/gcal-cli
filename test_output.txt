@@ -1,0 +1,8 @@
+	github.com/btafoya/gcal-cli/cmd/gcal-cli		coverage: 0.0% of statements
+	github.com/btafoya/gcal-cli/internal/commands		coverage: 0.0% of statements
+ok  	github.com/btafoya/gcal-cli/pkg/auth	(cached)	coverage: 44.7% of statements
+ok  	github.com/btafoya/gcal-cli/pkg/calendar	0.008s	coverage: 28.0% of statements
+	github.com/btafoya/gcal-cli/pkg/config		coverage: 0.0% of statements
+?   	github.com/btafoya/gcal-cli/pkg/examples	[no test files]
+ok  	github.com/btafoya/gcal-cli/pkg/output	(cached)	coverage: 56.5% of statements
+	github.com/btafoya/gcal-cli/pkg/types		coverage: 0.0% of statements
