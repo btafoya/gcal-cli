@@ -1,179 +1,177 @@
-# gcal-cli - Google Calendar CLI Tool
+# gcal-cli
 
-A powerful Google Calendar command-line interface written in Go, designed for both human users and LLM agent integration. Features natural language date parsing, intelligent scheduling, multi-calendar support, and comprehensive event management.
+<div align="center">
 
-## Status: Phase 7 Complete ✅
+**A powerful Google Calendar command-line tool with natural language support**
 
-**Current Version**: v0.7.0-dev
+[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://go.dev/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-### 🎯 Key Features
+[Features](#features) • [Installation](#installation) • [Quick Start](#quick-start) • [Documentation](#documentation) • [Contributing](#contributing)
 
-- ✅ **Natural Language Dates** - "tomorrow at 2pm", "next Monday", "in 2 hours"
-- ✅ **Smart Scheduling** - Free/busy queries, conflict detection, available time slots
-- ✅ **Multi-Calendar Support** - Manage multiple calendars simultaneously with parallel operations
-- ✅ **Event Templates** - Pre-configured templates for common event types
-- ✅ **LLM-Optimized Output** - JSON, text, and minimal formats for automation
-- ✅ **Complete CRUD Operations** - Create, read, update, delete events and calendars
-- ✅ **OAuth2 Authentication** - Secure Google Calendar API integration
-- ✅ **Comprehensive Error Handling** - Structured error codes and retry logic
+</div>
 
-## Quick Start
+---
 
-### Build
+## Overview
+
+gcal-cli is a production-ready Google Calendar CLI tool written in Go, designed for both human users and LLM agent integration. It combines natural language processing with powerful scheduling features to make calendar management effortless from the command line.
+
+## Features
+
+### 🗣️ Natural Language Support
+Parse human-friendly date and time expressions:
+- `"tomorrow at 2pm"` → 2024-01-16T14:00:00
+- `"next Monday"` → Next Monday at midnight
+- `"in 2 hours"` → 2 hours from now
+- `"Friday at 3:30pm"` → This Friday at 15:30
+
+### 📅 Smart Scheduling
+- **Free/Busy Queries** - Check availability across calendars
+- **Conflict Detection** - Prevent double-booking before creating events
+- **Available Time Slots** - Find open times for meetings
+- **Multi-Calendar Support** - Manage multiple calendars simultaneously
+
+### ⚡ Event Management
+- Complete CRUD operations (Create, Read, Update, Delete)
+- Event templates for common event types
+- Recurring events and all-day events
+- Attendee management
+- Attachment support
+
+### 🤖 LLM-Optimized
+- **JSON Output** - Structured, machine-readable responses
+- **Consistent Schemas** - Predictable API responses
+- **Error Codes** - Structured error handling with recovery suggestions
+- **Idempotency** - Safe retry operations
+
+### 🔐 Authentication
+- OAuth2 with Google Calendar API
+- Automatic token refresh
+- Secure credential storage
+
+## Installation
+
+### From Source
 
 ```bash
+git clone https://github.com/btafoya/gcal-cli.git
+cd gcal-cli
 go build -o gcal-cli ./cmd/gcal-cli
 ```
 
-### Basic Usage
+### Requirements
+- Go 1.21 or later
+- Google Cloud Platform account
+- Google Calendar API enabled
+- OAuth2 credentials ([setup guide](./USER-INSTRUCTIONS.md#authentication))
+
+## Quick Start
+
+### 1. Authentication
 
 ```bash
-# Show help
-./gcal-cli --help
-
-# Show version
-./gcal-cli version
-
-# Initialize configuration
-./gcal-cli config init
-
-# Show configuration
-./gcal-cli config show
-
-# Set configuration value
-./gcal-cli config set output.default_format text
-```
-
-### Authentication
-
-Authenticate with Google Calendar using OAuth2:
-
-```bash
-# First-time authentication (opens browser)
+# First-time setup (opens browser for OAuth2)
 ./gcal-cli auth login
 
 # Check authentication status
 ./gcal-cli auth status
-
-# Logout (removes stored credentials)
-./gcal-cli auth logout
 ```
-
-**Prerequisites**: Download OAuth2 credentials from Google Cloud Console and save to `~/.config/gcal-cli/credentials.json`
 
 See [USER-INSTRUCTIONS.md](./USER-INSTRUCTIONS.md) for detailed authentication setup.
 
-### Calendar Events
-
-#### Basic Operations
+### 2. Create Events
 
 ```bash
-# Create event with natural language dates
+# Using natural language
 ./gcal-cli events create \
-  --title "Team Meeting" \
-  --start "tomorrow at 2pm" \
-  --end "tomorrow at 3pm" \
-  --description "Weekly sync"
+  --title "Team Standup" \
+  --start "tomorrow at 9am" \
+  --end "tomorrow at 9:15am"
 
-# List upcoming events
-./gcal-cli events list --from "today" --to "next Friday"
+# Using templates
+./gcal-cli events create \
+  --template meeting \
+  --start "next Monday at 2pm"
 
-# Get event details
-./gcal-cli events get <event-id>
-
-# Update event
-./gcal-cli events update <event-id> --title "Updated Title"
-
-# Delete event
-./gcal-cli events delete <event-id>
+# With attendees
+./gcal-cli events create \
+  --title "Project Review" \
+  --start "Friday at 3pm" \
+  --end "Friday at 4pm" \
+  --attendees "alice@example.com,bob@example.com"
 ```
 
-#### Advanced Features
+### 3. List Events
 
 ```bash
-# Create event from template
-./gcal-cli events create --template meeting --start "next Monday at 9am"
+# Upcoming events
+./gcal-cli events list --from "today" --to "next week"
 
-# Check for scheduling conflicts
-./gcal-cli events check-conflicts --start "tomorrow at 2pm" --end "tomorrow at 3pm"
+# Multiple calendars
+./gcal-cli events list \
+  --calendars "primary,work@example.com" \
+  --from "today"
+
+# JSON output (for automation)
+./gcal-cli events list --format json
+```
+
+### 4. Smart Scheduling
+
+```bash
+# Check for conflicts
+./gcal-cli events check-conflicts \
+  --start "tomorrow at 2pm" \
+  --end "tomorrow at 3pm"
 
 # Find available time slots
-./gcal-cli events find-free --from "today" --to "next week" --duration 60
-
-# List events from multiple calendars
-./gcal-cli events list --calendars "primary,work@example.com" --from "today"
+./gcal-cli events find-free \
+  --from "today" \
+  --to "next week" \
+  --duration 60
 ```
+
+## Usage Examples
+
+### Event Templates
+
+Built-in templates for common event types:
+
+```bash
+# Available templates: meeting, 1on1, lunch, focus, standup, interview
+./gcal-cli events create --template standup --start "tomorrow at 9am"
+./gcal-cli events create --template 1on1 --start "Friday at 2pm"
+```
+
+### Natural Language Dates
+
+Supported patterns:
+
+| Pattern | Example | Result |
+|---------|---------|--------|
+| Relative | `today`, `tomorrow`, `yesterday` | Specific date |
+| Time offsets | `in 2 hours`, `in 30 minutes` | Time from now |
+| Day of week | `next Monday`, `this Friday` | Next occurrence |
+| Combined | `tomorrow at 2pm`, `Monday at 9am` | Date + time |
 
 ### Output Formats
 
-The CLI supports three output formats for LLM-friendly interactions:
-
-#### JSON (Default - LLM Optimized)
 ```bash
-./gcal-cli version --format json
-```
+# JSON (default - machine-readable)
+./gcal-cli events list --format json
 
-Output:
-```json
-{
-  "success": true,
-  "operation": "version",
-  "data": {
-    "version": "dev",
-    "commit": "unknown",
-    "buildDate": "unknown"
-  },
-  "metadata": {
-    "timestamp": "2024-01-15T10:00:00Z"
-  }
-}
-```
+# Text (human-readable)
+./gcal-cli events list --format text
 
-#### Text (Human-Readable)
-```bash
-./gcal-cli config show --format text
-```
-
-#### Minimal (IDs Only - for Piping)
-```bash
-./gcal-cli version --format minimal
-```
-
-## Project Structure
-
-```
-gcal-cli/
-├── cmd/
-│   └── gcal-cli/          # Main application entry point
-│       ├── main.go
-│       └── root.go         # Root Cobra command
-├── pkg/
-│   ├── auth/              # Authentication (Phase 2)
-│   ├── calendar/          # Calendar operations (Phase 3)
-│   ├── config/            # Viper configuration ✓
-│   ├── output/            # Output formatters ✓
-│   │   ├── formatter.go
-│   │   ├── json.go
-│   │   ├── text.go
-│   │   └── minimal.go
-│   └── types/             # Shared types ✓
-│       ├── errors.go
-│       ├── event.go
-│       └── response.go
-├── internal/
-│   └── commands/          # Command implementations ✓
-│       ├── config.go
-│       └── version.go
-└── test/                  # Tests
-    ├── integration/
-    └── fixtures/
+# Minimal (IDs only - for piping)
+./gcal-cli events list --format minimal | xargs -I {} ./gcal-cli events delete {}
 ```
 
 ## Configuration
 
 Configuration file: `~/.config/gcal-cli/config.yaml`
-
-### Default Configuration
 
 ```yaml
 calendar:
@@ -182,65 +180,75 @@ calendar:
 
 output:
   default_format: "json"
-  color_enabled: false
   pretty_print: true
-
-auth:
-  credentials_path: "~/.config/gcal-cli/credentials.json"
-  tokens_path: "~/.config/gcal-cli/tokens.json"
-  auto_refresh: true
 
 api:
   retry_attempts: 3
-  retry_delay_ms: 1000
-  retry_max_delay_ms: 10000
   timeout_seconds: 30
-  rate_limit_buffer: 0.9
-
-events:
-  default_duration_minutes: 60
-  default_reminder_minutes: 10
-  send_notifications: true
 ```
 
-### Environment Variables
-
-All configuration values can be overridden with environment variables prefixed with `GCAL_`:
-
+Environment variables (override config):
 ```bash
 export GCAL_OUTPUT_DEFAULT_FORMAT=json
 export GCAL_CALENDAR_DEFAULT_CALENDAR_ID=primary
 ```
 
+## Documentation
+
+- **[USER-INSTRUCTIONS.md](./USER-INSTRUCTIONS.md)** - Complete user guide with examples
+- **[SCHEMAS.md](./SCHEMAS.md)** - JSON API schemas and response formats
+- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common issues and solutions
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guidelines
+
+## Project Structure
+
+```
+gcal-cli/
+├── cmd/gcal-cli/       # Main application entry
+├── pkg/
+│   ├── auth/          # OAuth2 authentication
+│   ├── calendar/      # Calendar operations
+│   ├── config/        # Configuration management
+│   ├── output/        # Output formatters
+│   └── types/         # Shared types and errors
+├── internal/
+│   └── commands/      # CLI command implementations
+└── docs/              # Implementation documentation
+```
+
+## Error Handling
+
+Structured error codes for reliable automation:
+
+| Code | Description | Recoverable |
+|------|-------------|-------------|
+| `AUTH_FAILED` | Authentication failure | Yes - run `auth login` |
+| `TOKEN_EXPIRED` | Token expired | Yes - automatic refresh |
+| `RATE_LIMIT` | API rate limit exceeded | Yes - retry with backoff |
+| `INVALID_INPUT` | Invalid input value | No - fix input |
+| `NOT_FOUND` | Resource not found | No |
+
+Example error response:
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMIT",
+    "message": "API rate limit exceeded",
+    "recoverable": true,
+    "suggestedAction": "Wait 1 minute and retry"
+  }
+}
+```
+
+## Performance
+
+- **Natural language parsing**: <1ms latency
+- **Multi-calendar operations**: Parallel execution with goroutines
+- **Free/busy queries**: ~500ms for 5 calendars
+- **Automatic retry**: Exponential backoff for transient errors
+
 ## Development
-
-### Prerequisites
-
-- Go 1.21 or later
-- Google Cloud Platform account (for Phase 2+)
-- Google Calendar API enabled (for Phase 2+)
-
-### Dependencies
-
-```
-github.com/spf13/cobra v1.10.1      # CLI framework
-github.com/spf13/viper v1.21.0      # Configuration
-google.golang.org/api v0.255.0      # Google APIs
-golang.org/x/oauth2 v0.33.0         # OAuth2
-```
-
-### Running Tests
-
-```bash
-# Run all tests
-go test ./...
-
-# Run tests with coverage
-go test ./... -cover
-
-# Run specific package tests
-go test ./pkg/output -v
-```
 
 ### Building
 
@@ -249,130 +257,64 @@ go test ./pkg/output -v
 go build -o gcal-cli ./cmd/gcal-cli
 
 # Production build with version info
-go build -ldflags "-X github.com/btafoya/gcal-cli/internal/commands.Version=1.0.0 \
-                    -X github.com/btafoya/gcal-cli/internal/commands.Commit=$(git rev-parse --short HEAD) \
-                    -X github.com/btafoya/gcal-cli/internal/commands.BuildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+go build -ldflags "-X github.com/btafoya/gcal-cli/internal/commands.Version=1.0.0" \
          -o gcal-cli ./cmd/gcal-cli
 ```
 
-## Error Handling
-
-The CLI uses structured error codes for machine-parseable error handling:
-
-### Error Codes
-
-- `AUTH_FAILED` - Authentication failure
-- `TOKEN_EXPIRED` - Token expiration
-- `INVALID_INPUT` - Input validation failure
-- `MISSING_REQUIRED` - Required field missing
-- `NOT_FOUND` - Resource not found
-- `RATE_LIMIT` - API rate limit exceeded
-- `API_ERROR` - Google Calendar API error
-- `CONFIG_ERROR` - Configuration error
-- `NETWORK_ERROR` - Network connectivity issue
-
-### Error Response Format
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": "INVALID_INPUT",
-    "message": "Invalid value for field",
-    "details": "Additional context",
-    "recoverable": true,
-    "suggestedAction": "Corrective action"
-  }
-}
-```
-
-## Roadmap
-
-### Phase 1: Foundation ✅
-- [x] Project structure and CLI framework
-- [x] Configuration management
-- [x] Output formatters (JSON, Text, Minimal)
-- [x] Error handling infrastructure
-
-### Phase 2: Authentication ✅
-- [x] OAuth2 flow implementation
-- [x] Token storage and automatic refresh
-- [x] Auth commands (login, logout, status)
-
-### Phase 3: Event Operations ✅
-- [x] Complete event CRUD operations
-- [x] All-day event support
-- [x] Attendee management
-- [x] Recurring events
-
-### Phase 4: Calendar Operations ✅
-- [x] List and get calendars
-- [x] Calendar metadata management
-
-### Phase 5: LLM Optimization ✅
-- [x] Machine-readable JSON output
-- [x] Structured error responses
-- [x] Idempotency support
-
-### Phase 6: Testing & Documentation ✅
-- [x] Comprehensive test coverage
-- [x] Complete documentation
-- [x] User guide and troubleshooting
-
-### Phase 7: Advanced Features ✅
-- [x] Natural language date parsing
-- [x] Free/busy queries and conflict detection
-- [x] Multi-calendar support
-- [x] Event templates
-- [x] Calendar sharing
-
-**Project Status**: All planned phases complete. The tool is production-ready with comprehensive features for Google Calendar management.
-
-## Documentation
-
-- **[USER-INSTRUCTIONS.md](./USER-INSTRUCTIONS.md)** - Complete user guide with examples
-- **[SCHEMAS.md](./SCHEMAS.md)** - JSON schema documentation
-- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common issues and solutions
-- **[docs/PLAN.md](./docs/PLAN.md)** - Detailed implementation plan
-- **[docs/PHASE7_COMPLETE.md](./docs/PHASE7_COMPLETE.md)** - Phase 7 implementation details
-- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guidelines
-
-## Performance
-
-- Natural language parsing: <1ms latency
-- Multi-calendar operations: Parallel execution with goroutines
-- Free/busy queries: ~500ms for 5 calendars
-- Automatic retry with exponential backoff
-
-## Requirements
-
-- Go 1.21 or later
-- Google Cloud Platform account
-- Google Calendar API enabled
-- OAuth2 credentials from Google Cloud Console
-
-## Installation
+### Testing
 
 ```bash
-# Clone repository
-git clone https://github.com/btafoya/gcal-cli.git
-cd gcal-cli
+# Run all tests
+go test ./...
 
-# Build
-go build -o gcal-cli ./cmd/gcal-cli
+# With coverage
+go test ./... -cover
 
-# Install globally (optional)
-go install ./cmd/gcal-cli
+# Specific package
+go test ./pkg/calendar -v
 ```
 
-## License
+### Dependencies
 
-MIT License - See LICENSE file for details
+```
+github.com/spf13/cobra v1.10.1      # CLI framework
+github.com/spf13/viper v1.21.0      # Configuration
+google.golang.org/api v0.255.0      # Google Calendar API
+golang.org/x/oauth2 v0.33.0         # OAuth2 authentication
+```
 
 ## Contributing
 
-Contributions welcome! This project follows Go best practices and includes comprehensive tests. See [PLAN.md](./PLAN.md) for the development roadmap.
+Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+### Areas for Contribution
+- Increase test coverage (currently ~80%)
+- Add more natural language patterns
+- Improve documentation and examples
+- Performance optimizations
+- New event template types
+
+## License
+
+MIT License - See [LICENSE](LICENSE) for details.
 
 ## Author
 
-Developed by btafoya with focus on LLM agent integration and natural language interaction.
+Developed by [btafoya](https://github.com/btafoya) with focus on LLM agent integration and natural language interaction.
+
+## Acknowledgments
+
+Built with:
+- [Cobra](https://github.com/spf13/cobra) - CLI framework
+- [Viper](https://github.com/spf13/viper) - Configuration management
+- [Google Calendar API](https://developers.google.com/calendar) - Calendar integration
+
+---
+
+<div align="center">
+
+**[⬆ back to top](#gcal-cli)**
+
+Made with ❤️ using Go
+
+</div>
