@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        go-version: ['1.24']
+        go-version: ['stable']
 
     steps:
     - name: Checkout code
@@ -64,7 +64,16 @@ jobs:
           BINARY_NAME="gcal-cli"
         fi
 
-        go build -ldflags "$LDFLAGS" -o "$BINARY_NAME" ./cmd/gcal-cli
+        echo "Building with: go build -ldflags \"$LDFLAGS\" -o \"$BINARY_NAME\" ./cmd/gcal-cli"
+        go build -ldflags "$LDFLAGS" -o "$BINARY_NAME" ./cmd/gcal-cli || { echo "Build failed!"; exit 1; }
+
+        # Verify binary was created
+        if [[ ! -f "$BINARY_NAME" ]]; then
+          echo "Error: Binary $BINARY_NAME not found after build"
+          ls -la
+          exit 1
+        fi
+        echo "Build successful: $BINARY_NAME"
 
         # Create archive
         OS_NAME="${{ matrix.os }}"
