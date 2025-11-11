@@ -64,6 +64,14 @@ jobs:
           BINARY_NAME="gcal-cli"
         fi
 
+        echo "Current directory: $(pwd)"
+        echo "Listing project structure:"
+        ls -la
+        echo "Listing cmd directory:"
+        ls -la cmd/
+        echo "Listing cmd/gcal-cli directory:"
+        ls -la cmd/gcal-cli/
+        echo ""
         echo "Building with: go build -ldflags \"$LDFLAGS\" -o \"$BINARY_NAME\" ./cmd/gcal-cli"
         go build -ldflags "$LDFLAGS" -o "$BINARY_NAME" ./cmd/gcal-cli || { echo "Build failed!"; exit 1; }
 
