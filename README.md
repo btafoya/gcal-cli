@@ -53,6 +53,36 @@ Parse human-friendly date and time expressions:
 
 ## Installation
 
+### Pre-built Binaries (Recommended)
+
+Download the latest release for your platform from the [Releases page](https://github.com/btafoya/gcal-cli/releases/latest).
+
+**Linux:**
+```bash
+# Download and extract
+curl -LO https://github.com/btafoya/gcal-cli/releases/latest/download/gcal-cli-1.0.0-ubuntu.tar.gz
+tar -xzf gcal-cli-1.0.0-ubuntu.tar.gz
+
+# Move to PATH
+sudo mv gcal-cli /usr/local/bin/
+```
+
+**macOS:**
+```bash
+# Download and extract
+curl -LO https://github.com/btafoya/gcal-cli/releases/latest/download/gcal-cli-1.0.0-macos.tar.gz
+tar -xzf gcal-cli-1.0.0-macos.tar.gz
+
+# Move to PATH
+sudo mv gcal-cli /usr/local/bin/
+```
+
+**Windows:**
+```powershell
+# Download from releases page and extract gcal-cli.exe
+# Add to PATH or run from download location
+```
+
 ### From Source
 
 ```bash
@@ -62,10 +92,10 @@ go build -o gcal-cli ./cmd/gcal-cli
 ```
 
 ### Requirements
-- Go 1.23 or later
 - Google Cloud Platform account
 - Google Calendar API enabled
 - OAuth2 credentials ([setup guide](./USER-INSTRUCTIONS.md#authentication))
+- *For building from source: Go 1.23 or later*
 
 ## Quick Start
 
